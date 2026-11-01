@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Shah Group of Companies</title>
+<meta name="description" content="Shah Group of Companies — a family of businesses spanning permit expediting, design, construction and digital services." />
+<link rel="icon" type="image/png" href="assets/logos/favicon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --navy:#1B3564;
+    --navy-deep:#12254A;
+    --gold:#B08A3E;
+    --gold-bright:#C99A3C;
+    --ink:#24303F;
+    --muted:#6B7686;
+    --bg:#FBFAF7;
+    --card:#FFFFFF;
+    --hairline:rgba(27,53,100,.10);
+    --serif:"Playfair Display", Georgia, "Times New Roman", serif;
+    --sans:"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:var(--sans);
+    background:var(--bg);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  img{max-width:100%;display:block}
+  a{color:inherit}
+
+  /* ============ INTRO ("video") ============ */
+  #intro{
+    position:fixed; inset:0; z-index:1000;
+    background:var(--bg);
+    display:flex; align-items:center; justify-content:center;
+    transition:transform 1s cubic-bezier(.7,0,.2,1), opacity .8s ease;
+  }
+  #intro.done{transform:translateY(-100%); opacity:0; pointer-events:none}
+  .intro-stage{
+    position:relative;
+    width:min(80vw, 560px);
+    aspect-ratio:5/3;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .intro-item{
+    position:absolute; inset:0;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:22px;
+    opacity:0; transform:scale(.96);
+    transition:opacity .65s ease, transform .65s ease;
+    pointer-events:none;
+  }
+  .intro-item.active{opacity:1; transform:scale(1)}
+  .intro-item img{max-width:min(64vw,380px); max-height:22vh; width:auto; height:auto; object-fit:contain}
+  .intro-item .intro-name{
+    font-family:var(--sans); font-size:.72rem; font-weight:500;
+    letter-spacing:.42em; text-transform:uppercase; color:var(--muted);
+    text-indent:.42em; /* balance letterspacing on centered text */
+  }
+  /* text fallback / placeholder mark */
+  .intro-mark{
+    font-family:var(--serif); color:var(--navy);
+    font-size:clamp(2.2rem, 6vw, 3.6rem); font-weight:600; line-height:1.1;
+    text-align:center;
+  }
+  .intro-mark small{
+    display:block; font-family:var(--sans); font-size:.66rem; font-weight:500;
+    letter-spacing:.4em; text-transform:uppercase; color:var(--gold);
+    margin-top:14px; text-indent:.4em;
+  }
+  /* finale */
+  .intro-item.finale img{max-height:30vh; filter:drop-shadow(0 2px 24px rgba(27,53,100,.10))}
+  .gold-rule{
+    width:0; height:2px; background:linear-gradient(90deg, var(--gold), var(--gold-bright), var(--gold));
+    transition:width .9s cubic-bezier(.6,0,.2,1) .35s;
+  }
+  .intro-item.active .gold-rule{width:min(46vw,300px)}
+  .intro-progress{
+    position:absolute; bottom:26px; left:50%; transform:translateX(-50%);
+    display:flex; gap:8px;
+  }
+  .intro-progress span{
+    width:22px; height:2px; background:var(--hairline); transition:background .4s ease;
+  }
+  .intro-progress span.on{background:var(--gold)}
+  #skip-intro{
+    position:absolute; bottom:22px; right:26px;
+    font-family:var(--sans); font-size:.68rem; font-weight:500;
+    letter-spacing:.28em; text-transform:uppercase;
+    color:var(--muted); background:none; border:none; cursor:pointer;
+    padding:8px 4px; text-indent:.28em;
+    transition:color .25s ease;
+  }
+  #skip-intro:hover{color:var(--navy)}
+  body.intro-playing{overflow:hidden}
+
+  /* ============ HEADER ============ */
+  header{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:26px min(6vw,64px);
+  }
+  .brand{display:flex; align-items:center; gap:14px; text-decoration:none}
+  .brand img{height:44px; width:auto}
+  .brand-name{
+    font-family:var(--serif); font-size:1.15rem; font-weight:600; color:var(--navy);
+    line-height:1.1;
+  }
+  .brand-sub{
+    font-size:.56rem; font-weight:500; letter-spacing:.34em; text-transform:uppercase;
+    color:var(--gold); margin-top:3px; text-indent:.34em;
+  }
+  .header-est{
+    font-size:.66rem; letter-spacing:.26em; text-transform:uppercase; color:var(--muted);
+    display:none;
+  }
+  @media(min-width:640px){ .header-est{display:block} }
+
+  /* ============ HERO ============ */
+  .hero{
+    padding:clamp(48px,9vh,110px) min(6vw,64px) clamp(40px,7vh,80px);
+    text-align:center;
+    position:relative;
+  }
+  .hero::before{
+    content:""; position:absolute; inset:0;
+    background:
+      radial-gradient(60% 50% at 50% 0%, rgba(201,154,60,.06), transparent 70%);
+    pointer-events:none;
+  }
+  .hero-kicker{
+    font-size:.68rem; font-weight:500; letter-spacing:.4em; text-transform:uppercase;
+    color:var(--gold); text-indent:.4em; margin-bottom:26px;
+  }
+  .hero h1{
+    font-family:var(--serif); font-weight:600; color:var(--navy);
+    font-size:clamp(2.1rem, 5.2vw, 3.9rem); line-height:1.12;
+    max-width:18ch; margin:0 auto 24px;
+  }
+  .hero-rule{
+    width:min(38vw,180px); height:2px; margin:0 auto 24px;
+    background:linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+  .hero p{
+    color:var(--muted); font-size:clamp(.95rem,1.4vw,1.08rem); line-height:1.7;
+    max-width:56ch; margin:0 auto;
+  }
+
+  /* ============ COMPANIES ============ */
+  .companies{padding:clamp(30px,5vh,60px) min(6vw,64px) clamp(60px,9vh,110px)}
+  .section-title{
+    text-align:center; margin-bottom:clamp(30px,5vh,54px);
+  }
+  .section-title h2{
+    font-family:var(--serif); font-weight:600; color:var(--navy);
+    font-size:clamp(1.5rem,3vw,2.2rem);
+  }
+  .section-title .rule{
+    width:64px; height:2px; margin:16px auto 0;
+    background:linear-gradient(90deg, var(--gold), var(--gold-bright));
+  }
+  .grid{
+    display:grid; gap:22px;
+    grid-template-columns:repeat(auto-fit, minmax(min(100%,270px),1fr));
+    max-width:1180px; margin:0 auto;
+  }
+  .card{
+    background:var(--card);
+    border:1px solid var(--hairline);
+    border-radius:14px;
+    padding:36px 28px 30px;
+    display:flex; flex-direction:column; align-items:center; text-align:center;
+    gap:18px;
+    transition:transform .35s ease, box-shadow .35s ease, border-color .35s ease;
+    text-decoration:none;
+  }
+  .card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 18px 44px -18px rgba(18,37,74,.22);
+    border-color:rgba(176,138,62,.35);
+  }
+  .card-logo{
+    height:64px; display:flex; align-items:center; justify-content:center;
+  }
+  .card-logo img{max-height:64px; width:auto; object-fit:contain}
+  .card-name{
+    font-family:var(--serif); font-size:1.18rem; font-weight:600; color:var(--navy);
+    line-height:1.25;
+  }
+  .card-desc{font-size:.86rem; line-height:1.65; color:var(--muted); max-width:32ch}
+  .card-link{
+    margin-top:auto; font-size:.66rem; font-weight:600;
+    letter-spacing:.3em; text-transform:uppercase; color:var(--gold); text-indent:.3em;
+    display:inline-flex; align-items:center; gap:8px;
+  }
+  .card-link .arrow{transition:transform .3s ease; font-size:.8rem; text-indent:0}
+  .card:hover .card-link .arrow{transform:translateX(5px)}
+  /* placeholder mark for a company whose logo is pending */
+  .mark-placeholder{
+    font-family:var(--serif); font-weight:600; color:var(--navy);
+    font-size:2rem; line-height:1;
+    padding:10px 18px;
+    border:1px solid rgba(176,138,62,.4); border-radius:10px;
+    color:var(--navy);
+  }
+
+  /* ============ FOOTER ============ */
+  footer{
+    border-top:1px solid var(--hairline);
+    padding:34px min(6vw,64px) 40px;
+    display:flex; flex-wrap:wrap; gap:18px; align-items:center; justify-content:space-between;
+  }
+  .footer-brand{
+    font-family:var(--serif); color:var(--navy); font-weight:600; font-size:1rem;
+  }
+  .footer-brand span{
+    font-family:var(--sans); font-weight:400; color:var(--muted); font-size:.78rem; margin-left:10px;
+  }
+  .footer-actions{display:flex; gap:26px; align-items:center}
+  .footer-actions button, .footer-actions a{
+    font-family:var(--sans); font-size:.66rem; font-weight:500;
+    letter-spacing:.26em; text-transform:uppercase; text-indent:.26em;
+    color:var(--muted); background:none; border:none; cursor:pointer;
+    transition:color .25s ease; text-decoration:none;
+  }
+  .footer-actions button:hover, .footer-actions a:hover{color:var(--navy)}
+  .footer-copy{width:100%; font-size:.72rem; color:#9AA3B0; letter-spacing:.04em}
+
+  /* reveal-on-scroll */
+  .reveal{opacity:0; transform:translateY(22px); transition:opacity .7s ease, transform .7s ease}
+  .reveal.in{opacity:1; transform:none}
+</style>
+</head>
+<body class="intro-playing">
+
+<!-- ================= INTRO SEQUENCE ================= -->
+<div id="intro" aria-label="Shah Group of Companies introduction">
+  <div class="intro-stage" id="intro-stage"></div>
+  <div class="intro-progress" id="intro-progress"></div>
+  <button id="skip-intro" type="button">Skip</button>
+</div>
+
+<!-- ================= PAGE ================= -->
+<header>
+  <a class="brand" href="#">
+    <img src="assets/logos/shah-group-transparent.png" alt="Shah Group of Companies logo" />
+    <span>
+      <span class="brand-name">Shah Group</span><br />
+      <span class="brand-sub">of Companies</span>
+    </span>
+  </a>
+  <div class="header-est">Chicago &middot; Nationwide</div>
+</header>
+
+<section class="hero" id="top">
+  <div class="hero-kicker">A Family of Companies</div>
+  <h1>Many companies. One standard of excellence.</h1>
+  <div class="hero-rule"></div>
+  <p>Shah Group of Companies brings together permit expediting, architectural design, construction, and digital services &mdash; independent teams united by shared values and a single commitment to doing things right.</p>
+</section>
+
+<section class="companies" id="companies">
+  <div class="section-title reveal">
+    <h2>Our Companies</h2>
+    <div class="rule"></div>
+  </div>
+  <div class="grid" id="company-grid"><!-- rendered from COMPANIES below --></div>
+</section>
+
+<footer>
+  <div class="footer-brand">Shah Group <span>of Companies</span></div>
+  <div class="footer-actions">
+    <button id="replay-intro" type="button">Replay Intro</button>
+    <a href="#top">Back to Top</a>
+  </div>
+  <div class="footer-copy">&copy; <span id="year"></span> Shah Group of Companies. All rights reserved.</div>
+</footer>
+
+<script>
+/* =====================================================================
+   COMPANY LIST — to add a company (e.g. from the directory PDF), just
+   add an entry here. It automatically joins the intro video + the grid.
+   logo: path to image file, or null to show an elegant text mark.
+   ===================================================================== */
+const COMPANIES = [
+  {
+    name: "Cornerstone Permit Company",
+    short: "Cornerstone",
+    logo: "assets/logos/cornerstone.png",
+    url: "https://cornerstonepermit.com",
+    desc: "Building permits, licensing, and code consulting — expedited nationwide."
+  },
+  {
+    name: "JayLine Studio",
+    short: "JayLine Studio",
+    logo: "assets/logos/jayline.png",
+    url: "https://jaylinestudio.com",
+    desc: "BIM &amp; CAD solutions for architectural, structural, and facade projects."
+  },
+  {
+    name: "Arovanni and Company Construction",
+    short: "Arovanni &amp; Co.",
+    logo: null, /* TODO: swap in the real logo file when received */
+    url: null,
+    desc: "General contracting and construction services. MBE certified."
+  },
+  {
+    name: "UPD8",
+    short: "UPD8",
+    logo: "assets/logos/upd8-horizontal.png",
+    url: "https://getupd8.com",
+    desc: "Fast, modern website rebuilds that are easy to update and a joy to own."
+  }
+];
+
+const SHAH = {
+  name: "Shah Group of Companies",
+  logo: "assets/logos/shah-group-transparent.png"
+};
+
+/* ---------------- render company grid ---------------- */
+const grid = document.getElementById("company-grid");
+grid.innerHTML = COMPANIES.map(c => {
+  const logoHtml = c.logo
+    ? `<img src="${c.logo}" alt="${c.name} logo" loading="lazy" />`
+    : `<div class="mark-placeholder">${c.short}</div>`;
+  const linkHtml = c.url
+    ? `<span class="card-link">Visit Site <span class="arrow">&#8594;</span></span>`
+    : "";
+  const tag = c.url ? "a" : "div";
+  const href = c.url ? ` href="${c.url}" target="_blank" rel="noopener"` : "";
+  return `<${tag} class="card reveal"${href}>${logoHtml}<div class="card-name">${c.name}</div><div class="card-desc">${c.desc}</div>${linkHtml}</${tag}>`;
+}).join("");
+
+document.getElementById("year").textContent = new Date().getFullYear();
+
+/* ---------------- intro sequence ---------------- */
+const stage = document.getElementById("intro-stage");
+const progress = document.getElementById("intro-progress");
+const intro = document.getElementById("intro");
+const STEP_MS = 1700;   /* per-company beat */
+const FINALE_MS = 2600; /* shah group finale */
+
+/* Build intro items: each company, then the Shah Group finale */
+const items = COMPANIES.map(c => {
+  const visual = c.logo
+    ? `<img src="${c.logo}" alt="${c.name}" />`
+    : `<div class="intro-mark">${c.short}<small>${c.name}</small></div>`;
+  return `<div class="intro-item" data-label="${c.short}">${visual}<div class="intro-name">${c.short}</div></div>`;
+});
+items.push(
+  `<div class="intro-item finale" data-label="Shah Group">` +
+    `<img src="${SHAH.logo}" alt="${SHAH.name}" />` +
+    `<div class="gold-rule"></div>` +
+  `</div>`
+);
+stage.innerHTML = items.join("");
+progress.innerHTML = items.map(() => "<span></span>").join("");
+
+const dots = [...progress.children];
+const nodes = [...stage.children];
+let introTimer = null, introRunning = false;
+
+function endIntro(){
+  if (!introRunning) return;
+  introRunning = false;
+  clearTimeout(introTimer);
+  intro.classList.add("done");
+  document.body.classList.remove("intro-playing");
+  try { sessionStorage.setItem("sg-intro-played", "1"); } catch(e) {}
+}
+
+function playIntro(){
+  intro.classList.remove("done");
+  document.body.classList.add("intro-playing");
+  introRunning = true;
+  nodes.forEach(n => n.classList.remove("active"));
+  dots.forEach(d => d.classList.remove("on"));
+  window.scrollTo(0, 0);
+
+  let i = 0;
+  const step = () => {
+    if (!introRunning) return;
+    nodes.forEach((n, j) => n.classList.toggle("active", j === i));
+    dots.forEach((d, j) => d.classList.toggle("on", j <= i));
+    const isFinale = i === nodes.length - 1;
+    introTimer = setTimeout(() => {
+      i++;
+      if (i < nodes.length) step();
+      else endIntro();
+    }, isFinale ? FINALE_MS : STEP_MS);
+  };
+  step();
+}
+
+document.getElementById("skip-intro").addEventListener("click", endIntro);
+document.getElementById("replay-intro").addEventListener("click", playIntro);
+
+const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+let played = false;
+try { played = sessionStorage.getItem("sg-intro-played") === "1"; } catch(e) {}
+
+if (prefersReduced || played) {
+  introRunning = false;
+  intro.classList.add("done");
+  document.body.classList.remove("intro-playing");
+} else {
+  playIntro();
+}
+
+/* ---------------- reveal on scroll ---------------- */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+  });
+}, { threshold: .12 });
+document.querySelectorAll(".reveal").forEach(el => io.observe(el));
+</script>
+</body>
+</html>

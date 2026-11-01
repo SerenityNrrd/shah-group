@@ -1,0 +1,8 @@
+.git
+.gitignore
+.dockerignore
+.zcode-site/
+.zcode-site.json
+README.md
+*.log
+.DS_Store

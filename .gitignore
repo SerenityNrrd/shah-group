@@ -1,0 +1,7 @@
+# Local deploy artifacts (ZCode Sites)
+.zcode-site/
+.zcode-site.json
+
+# OS / editor noise
+.DS_Store
+*.log
