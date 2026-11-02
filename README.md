@@ -1,17 +1,13 @@
 # Shah Group of Companies
 
-Two static sites in one repo:
+Umbrella landing page for the Shah Group companies, with an animated logo
+intro and a company directory grid.
 
-| Site | Path | Domain | Dockerfile |
-|---|---|---|---|
-| Shah Group umbrella page | `/` (root) | shah-group.net | `Dockerfile` |
-| Arovanni &amp; Co. Construction (drywall &amp; framing) | `/arovanni/` | sheethappens.org | `arovanni/Dockerfile` |
+- **Live (ZCode Sites preview):** https://shah-group-my08.zai-ai.site
+- **Docker:** `nginx:alpine` serving static files on port `80`.
 
-Both are `nginx:alpine` serving static files on port `80`. In Coolify,
-create one app per site from this repo and set the Dockerfile location
-accordingly (root `/Dockerfile` vs `/arovanni/Dockerfile`).
-
-- **Preview (ZCode Sites):** https://shah-group-my08.zai-ai.site (umbrella) · /arovanni/ (Arovanni)
+Sister repo: [sheethappens](https://github.com/SerenityNrrd/sheethappens) —
+the Arovanni &amp; Company Construction site (sheethappens.org).
 
 ## Run locally
 
