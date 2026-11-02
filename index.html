@@ -189,10 +189,11 @@
   .card-logo{
     height:76px; display:flex; align-items:center; justify-content:center;
   }
-  /* width-first sizing so wordmarks align in width; dense portrait
-     marks (.portrait, auto-tagged) render smaller for equal optical weight */
-  .card-logo img{max-width:210px; max-height:60px; width:auto; height:auto; object-fit:contain}
-  .card-logo img.portrait{max-width:130px; max-height:50px}
+  /* one uniform height for every logo — the row reads as equal size;
+     dense portrait marks (.portrait, auto-tagged) sit slightly under
+     the line because square masses read heavier than thin wordmarks */
+  .card-logo img{height:50px; width:auto; max-width:230px; object-fit:contain}
+  .card-logo img.portrait{height:44px; max-width:230px}
   .card-name{
     font-family:var(--serif); font-size:1.18rem; font-weight:600; color:var(--navy);
     line-height:1.25;
@@ -409,9 +410,11 @@ const AFFILIATES = [
 /* ---------------- render company grid ---------------- */
 const grid = document.getElementById("company-grid");
 grid.innerHTML = COMPANIES.map(c => {
-  const logoHtml = c.logo
-    ? `<img src="${c.logo}" alt="${c.name} logo" loading="lazy" />`
-    : `<div class="mark-placeholder">${c.short}</div>`;
+  const logoHtml = `<div class="card-logo">${
+    c.logo
+      ? `<img src="${c.logo}" alt="${c.name} logo" loading="lazy" />`
+      : `<div class="mark-placeholder">${c.short}</div>`
+  }</div>`;
   const linkHtml = c.url
     ? `<span class="card-link">Visit Site <span class="arrow">&#8594;</span></span>`
     : "";
