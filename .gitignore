@@ -2,6 +2,9 @@
 .zcode-site/
 .zcode-site.json
 
+# Internal source doc (not for the public repo)
+Company_Website_Directory.pdf
+
 # OS / editor noise
 .DS_Store
 *.log
