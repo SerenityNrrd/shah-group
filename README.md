@@ -6,7 +6,7 @@ intro and a company directory grid.
 - **Live (ZCode Sites preview):** https://shah-group-my08.zai-ai.site
 - **Docker:** `nginx:alpine` serving static files on port `80`.
 
-Sister repo: [sheethappens](https://github.com/SerenityNrrd/sheethappens) —
+Sister repo: [arovanni](https://github.com/SerenityNrrd/arovanni) —
 the Arovanni &amp; Company Construction site (sheethappens.org).
 
 ## Run locally
